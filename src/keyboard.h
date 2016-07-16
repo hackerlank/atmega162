@@ -9,32 +9,22 @@ public:
 	int keyscan(void)
 	{
 		int key_num = 0;
+		int cols[] = {0xe, 0xd, 0x7, 0xb};
+		int rows[] = {0xe, 0xd, 0xb, 0x7};
 		for (int i = 0; i < 4; ++i)
 			pin(i, 0);
 		for (int i = 4; i < 8; ++i)
 			pin(i, 1, false);
-		_delay_ms(1);
-
-		switch (pin_col() & 0xf)
-		{
-			case 0xe: key_num = 1; break;
-			case 0xd: key_num = 2; break;
-			case 0xb: key_num = 4; break;
-			case 0x7: key_num = 3; break;
-		}
-
+		for (int i = 0, t = pin_col() & 0xf; i < 4; ++i)
+			if (t == cols[i])
+				key_num = i + 1;
 		for (int i = 4; i < 8; ++i)
 			pin(i, 0);
 		for (int i = 0; i < 4; ++i)
 			pin(i, 1, false);
-		_delay_ms(1);
-		switch(pin_row() & 0xf)
-		{
-			case 0xe: key_num += 0; break;
-			case 0xd: key_num += 4; break;
-			case 0xb: key_num += 8; break;
-			case 0x7: key_num += 12; break;
-		}
+		for (int i = 0, t = pin_row() & 0xf; i < 4; ++i)
+			if (t == rows[i])
+				key_num += i * 4;
 		return key_num;
 	}
 
