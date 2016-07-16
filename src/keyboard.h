@@ -53,8 +53,6 @@ private:
 
 	void setPort(uint8 bits)
 	{
-//		DDRD |= 0xfc;
-//		DDRB |= 0x03;
 		PORTD |= (bits & 0xfc);
 		PORTB |= (bits & 0x03);
 	}
@@ -65,21 +63,6 @@ private:
 		PORTB &= ~(bits & 0x03);
 	}
 
-	// int _row()
-	// {
-	// 	for (int i = 0; i < 4; ++i)
-	// 		if (~pin_row() == (1 << i))
-	// 			return i;
-	// 	return -1;
-	// }
-	// int _col()
-	// {
-	// 	for (int i = 0; i < 4; ++i)
-	// 		if (~pin_col() == (1 << i))
-	// 			return i;
-	// 	return -1;
-	// }
-
 	int pin_row()
 	{
 		return pin(0) + (pin(1) << 1) + (pin(2) << 2) + (pin(3) << 3);
@@ -89,27 +72,11 @@ private:
 		return pin(4) | (pin(5) << 1) | (pin(6) << 2) | (pin(7) << 3);
 	}
 
-	void pin_hex(int hex)
-	{
-		for (int i = 0; i < 8; ++i)
-			pin(i, hex & (1 << i));
-	}
-	
-	uint8 pin_hex()
-	{
-		uint8 hex = 0;
-		for (int i = 0; i < 8; ++i)
-			hex |= pin(i) << i;
-		return hex;
-	}
-
 	void pin(int id, bool val, bool output = true)
 	{
 		if (id < 6)
 			chip.pd(7 - id, val, output);
 		else
-/// !!!
-//			chip.pd(7 - id, val);
 			chip.pb(7 - id, val, output);
 	}
 
