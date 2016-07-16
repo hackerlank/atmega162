@@ -6,6 +6,11 @@
 #endif
 
 #include <avr/io.h>
+
+class Chip;
+
+typedef void (Chip::*ChipPort) (int id, bool val);
+
 class Chip
 {
 public:
@@ -72,5 +77,7 @@ private:
 	}
 	
 };
+
+extern Chip chip;
 
 #endif
