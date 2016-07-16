@@ -1,6 +1,9 @@
 # Name: Makefile
 # Author: Zhang Riyueming
 
+BUILD_DIR = ../build/
+BUILD_DIR := $(shell cd $(BUILD_DIR) && /bin/pwd)
+
 # This is a prototype Makefile. Modify it according to your needs.
 # You should at least check the settings for
 # DEVICE ....... The AVR device you compile for
@@ -18,7 +21,7 @@
 DEVICE     = atmega162
 CLOCK      = 8000000
 PROGRAMMER = -c USBasp
-OBJECTS    = ${file_base_name}.o
+OBJECTS    = $(BUILD_DIR)/${file_base_name}.o
 #FUSES      = -U hfuse:w:0xff:m
 #-U hfuse:w:0xd9:m -U lfuse:w:0x24:m
 
@@ -51,12 +54,15 @@ AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
 COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
 
 # symbolic targets:
-all:	${file_base_name}.hex
+all:	$(BUILD_DIR)%${file_base_name}.hex
 
-.c.o:
+$(BUILD_DIR)%.c.o:
 	$(COMPILE) -c $< -o $@
 
-.cpp.o:
+$(BUILD_DIR)%.cpp.o:
+	$(COMPILE) -c $< -o $@
+
+$(BUILD_DIR)%${file_base_name}.o: ${file_name}
 	$(COMPILE) -c $< -o $@
 
 .S.o:
@@ -73,7 +79,7 @@ all:	${file_base_name}.hex
 	$(COMPILE) -S $< -o $@
 
 flash:	all
-	$(AVRDUDE) -U flash:w:${file_base_name}.hex:i
+	$(AVRDUDE) -U flash:w:$(BUILD_DIR)/${file_base_name}.hex:i
 
 #fuse:
 #	$(AVRDUDE) $(FUSES)
@@ -89,19 +95,19 @@ clean:
 	rm -f ${file_base_name}.hex ${file_base_name}.elf $(OBJECTS)
 
 # file targets:
-${file_base_name}.elf: $(OBJECTS)
-	$(COMPILE) -o ${file_base_name}.elf $(OBJECTS)
+$(BUILD_DIR)%${file_base_name}.elf: $(OBJECTS)
+	$(COMPILE) -o $(BUILD_DIR)/${file_base_name}.elf $(OBJECTS)
 
-${file_base_name}.hex: ${file_base_name}.elf
-	rm -f ${file_base_name}.hex
-	avr-objcopy -j .text -j .data -O ihex ${file_base_name}.elf ${file_base_name}.hex
-	avr-size --format=avr --mcu=$(DEVICE) ${file_base_name}.elf
+$(BUILD_DIR)%${file_base_name}.hex: $(BUILD_DIR)%${file_base_name}.elf
+	rm -f $(BUILD_DIR)/${file_base_name}.hex
+	avr-objcopy -j .text -j .data -O ihex $(BUILD_DIR)/${file_base_name}.elf $(BUILD_DIR)/${file_base_name}.hex
+	avr-size --format=avr --mcu=$(DEVICE) $(BUILD_DIR)/${file_base_name}.elf
 # If you have an EEPROM section, you must also create a hex file for the
 # EEPROM and add it to the "flash" target.
 
 # Targets for code debugging and analysis:
 disasm:	${file_base_name}.elf
-	avr-objdump -d ${file_base_name}.elf
+	avr-objdump -d $(BUILD_DIR)/${file_base_name}.elf
 
 cpp:
 	$(COMPILE) -E ${file_name}

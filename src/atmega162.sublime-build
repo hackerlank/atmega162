@@ -7,7 +7,7 @@
     [
         {
             "name": "Run",
-            "shell_cmd": "./build.sh ${file_base_name} ${file_name} && make && make install"
+            "shell_cmd": "./build.sh ${file_base_name} ${file_name} && make install"
         }
     ]
 }
