@@ -9,35 +9,35 @@
 
 class Chip;
 
-typedef void (Chip::*ChipPort) (int id, bool val);
+typedef void (Chip::*ChipPort) (int id, bool val, bool output);
 
 class Chip
 {
 public:
-	void pa(int id, bool val)
+	void pa(int id, bool val, bool output = true)
 	{
 /*		DDRA |= 1 << id;
 		if (val)
 			PORTA |= 1 << id;
 		else
 			PORTA &= ~(1 << id);*/
-		_p(DDRA, PORTA, id, val);
+		_p(DDRA, PORTA, id, val, output);
 	}
-	void pb(int id, bool val)
+	void pb(int id, bool val, bool output = true)
 	{
-		_p(DDRB, PORTB, id, val);
+		_p(DDRB, PORTB, id, val, output);
 	}
-	void pc(int id, bool val)
+	void pc(int id, bool val, bool output = true)
 	{
-		_p(DDRC, PORTC, id, val);
+		_p(DDRC, PORTC, id, val, output);
 	}
-	void pd(int id, bool val)
+	void pd(int id, bool val, bool output = true)
 	{
-		_p(DDRD, PORTD, id, val);
+		_p(DDRD, PORTD, id, val, output);
 	}
-	void pe(int id, bool val)
+	void pe(int id, bool val, bool output = true)
 	{
-		_p(DDRE, PORTE, id, val);
+		_p(DDRE, PORTE, id, val, output);
 	}
 	
 	bool pa(int id)
@@ -62,9 +62,12 @@ public:
 	}
 	
 private:
-	void _p(volatile uint8_t& dd, volatile uint8_t& port, int id, bool val)
+	void _p(volatile uint8_t& dd, volatile uint8_t& port, int id, bool val, bool output)
 	{
-		dd |= 1 << id;
+		if (output)
+			dd |= 1 << id;
+		else
+			dd &= ~(1 << id);
 		if (val)
 			port |= 1 << id;
 		else

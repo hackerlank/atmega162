@@ -1,8 +1,14 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+typedef unsigned char uchar;
+typedef unsigned int uint;
+typedef unsigned char uint8;
+
 #include "chip.h"
 #include <util/delay.h>
+
+#define nop() asm("nop")
 
 void light(int id, bool on = true)
 {
@@ -13,9 +19,9 @@ void _beep(ChipPort port, int idx, int count)
 {
 	while (count--)
 	{
-		(chip.*port)(idx, 1);
+		(chip.*port)(idx, 1, true);
 		_delay_ms(50);
-		(chip.*port)(idx, 0);
+		(chip.*port)(idx, 0, true);
 		_delay_ms(200);
 	}	
 }
