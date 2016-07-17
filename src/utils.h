@@ -12,7 +12,13 @@ typedef unsigned char uint8;
 
 void light(int id, bool on = true)
 {
-	chip.pa(id, on);
+	if (id >= 0)
+		chip.pa(id, on);
+	else
+	{
+		DDRA = 0xff;
+		PORTA = on ? 0xff : 0x00;
+	}
 }
 
 void _beep(ChipPort port, int idx, int count)
@@ -29,6 +35,21 @@ void _beep(ChipPort port, int idx, int count)
 void beep_a(int count = 1)
 {
 	_beep(&Chip::pd, 3, count);
+}
+
+void blink()
+{
+	int i = 0;
+	while (1)
+	{
+		if (i & 8)
+			i = 0;
+		PORTA = 1 << i;
+		DDRA = 1 << i;
+
+		++i;
+		_delay_ms(100);
+	}
 }
 
 void beep_b(int count = 1)
