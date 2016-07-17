@@ -3,7 +3,7 @@
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
-typedef unsigned char uint8;
+typedef unsigned char byte;
 
 #include "chip.h"
 #include <util/delay.h>

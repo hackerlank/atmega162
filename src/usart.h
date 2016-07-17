@@ -21,8 +21,8 @@ public:
 	void init(int baud, bool inter)
 	{
 		intr_method = inter;
-		UBRR0H = (uint8)(baud >> 8);
-		UBRR0L = (uint8)baud;
+		UBRR0H = (byte)(baud >> 8);
+		UBRR0L = (byte)baud;
 		UCSR0B = (1 << RXEN0) | (1 << TXEN0) | (inter ? (1 << RXCIE0) : 0);
 		UCSR0C = (1 << URSEL0) | (0 << USBS0) | (3 << UCSZ00);
 		if (inter)
@@ -34,7 +34,7 @@ public:
 		trigger = c;
 	}
 
-	void sendbyte(uint8 c)
+	void sendbyte(byte c)
 	{
 		while (!(UCSR0A & (1 << UDRE0)));
 			UDR0 = c;
@@ -52,7 +52,7 @@ public:
 	void recvbyte()
 	{
 		while (!(UCSR0A & (1 << RXC0)));
-		uint8 read = UDR0;
+		byte read = UDR0;
 		if (read == trigger)
 			_triggered = true;
 		add2buf(read);

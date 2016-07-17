@@ -29,25 +29,25 @@ public:
 	}
 
 private:
-	void setDDR(uint8 bits)
+	void setDDR(byte bits)
 	{
 		DDRD |= (bits & 0xfc);
 		DDRB |= (bits & 0x03);
 	}
 
-	void clrDDR(uint8 bits)
+	void clrDDR(byte bits)
 	{
 		DDRD &= ~(bits & 0xfc);
 		DDRB &= ~(bits & 0x03);
 	}
 
-	void setPort(uint8 bits)
+	void setPort(byte bits)
 	{
 		PORTD |= (bits & 0xfc);
 		PORTB |= (bits & 0x03);
 	}
 
-	void clrPort(uint8 bits)
+	void clrPort(byte bits)
 	{
 		PORTD &= ~(bits & 0xfc);
 		PORTB &= ~(bits & 0x03);
@@ -70,7 +70,7 @@ private:
 			chip.pb(7 - id, val, output);
 	}
 
-	uint8 pin(int id)
+	byte pin(int id)
 	{
 		if (id < 6)
 			return chip.pd(7 - id);
