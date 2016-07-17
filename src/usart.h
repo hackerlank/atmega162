@@ -15,6 +15,7 @@ public:
 		clear_buf();
 		trigger = 0xff;
 		_triggered = false;
+		_loopback = false;
 	}
 
 	void init(int baud, bool inter)
@@ -55,6 +56,8 @@ public:
 		if (read == trigger)
 			_triggered = true;
 		add2buf(read);
+		if (_loopback)
+			sendbyte(read);
 	}
 
 	virtual void onRXCI()
@@ -78,6 +81,11 @@ public:
 		buf_tail = buf;
 	}
 
+	void loopback(bool val)
+	{
+		_loopback = val;
+	}
+
 protected:
 	void add2buf(char c)
 	{
@@ -88,13 +96,16 @@ protected:
 	}
 
 public:
-	bool _triggered;
 	char trigger;
 	bool intr_method;
 //	char buf[10240];
 	char buf[128];
 //	int len;
 	char *buf_tail, *buf_end;
+
+protected:
+	bool _triggered;
+	bool _loopback;
 };
 
 ISR(USART0_RXC_vect)

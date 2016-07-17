@@ -41,6 +41,12 @@ int main()
 				lcd.clear();
 				lcd.drawText(0, 0, tmp);
 			}
+			if (!strncmp(usart.buf, "loopback(", 9))
+			{
+				int n;
+				sscanf(usart.buf, "loopback(%d)", &n);
+				usart.loopback(n);
+			}
 
 			usart.clear_buf();
 		}
