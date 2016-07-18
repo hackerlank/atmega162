@@ -1,12 +1,18 @@
 
 #define MCUID 2
 
+#define DISPLAY_TEXT
+char text[65] = {0};
+
 #include "command.h"
 #include "keyboard.h"
 
 static char keys[] = "_123A456B789C*0#D";
 
-char text[65] = {0};
+
+int mode = 1;
+
+//char tmp
 
 int main()
 {
@@ -23,22 +29,42 @@ int main()
 	{
 		if (keyboard.triggered(keyid))
 		{
-#if 1
-			if (strlen(text) < 64)
+			if (keys[keyid] == 'A')
 			{
-				char *p = text;
-				for (; *p; ++p);
-				*p++ = keys[keyid];
-				*p = 0;
-				lcd.clear();
-				lcd.drawText(0, 0, text);
+				mode = 1;
 			}
-#endif
-#if 0
-			sprintf(text, "light(%d);", keys[keyid]-'0');
-			usart0.send(text);
-			usart1.send(text);
-#endif
+			else if (keys[keyid] == 'B')
+			{
+				mode = 2;
+			}
+			else if (keys[keyid] == 'C')
+			{
+				text[0] = 0;
+				lcd.clear();
+			}
+			else
+			{
+				switch (mode)
+				{
+				case 1:
+					if (strlen(text) < 64)
+					{
+						char *p = text;
+						for (; *p; ++p);
+						*p++ = keys[keyid];
+						*p = 0;
+						lcd.clear();
+						lcd.drawText(0, 0, text);
+					}
+					break;
+				case 2:
+					sprintf(text, "light(%d);", keys[keyid]-'0');
+//					usart0.send(text);
+					usart1.send(text);
+					beep(1);
+					break;
+				}
+			}
 		}
 		checkCmd(usart0);
 		checkCmd(usart1);

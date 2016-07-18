@@ -9,6 +9,7 @@ int main()
 	usart0.setTrigger(';');
 	usart1.init(0x33, true);
 	usart1.setTrigger(';');
+	light(1);
 	while (1)
 	{
 		checkCmd(usart0);
