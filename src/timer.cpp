@@ -4,8 +4,6 @@
 #include "utils.h"
 #include "timer.h"
 
-Chip chip;
-
 void onTimer1()
 {
 	beep_a();
