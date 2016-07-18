@@ -81,6 +81,10 @@ private:
 	
 };
 
+#if SINGLE_FILE
+Chip chip;
+#else
 extern Chip chip;
+#endif
 
 #endif

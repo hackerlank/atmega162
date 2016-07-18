@@ -3,10 +3,6 @@
 
 #include <avr/interrupt.h>
 
-class USART;
-
-extern USART usart;
-
 class USART
 {
 public:

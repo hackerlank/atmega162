@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-Chip chip;
 LCD lcd;
-USART usart;
+
+USART &usart = usart0;
 
 char tmp[32];
 
