@@ -131,13 +131,13 @@ public:
 	virtual void sendbyte(byte c)
 	{
 		while (!(UCSR1A & (1 << UDRE1)));
-			UDR0 = c;
+			UDR1 = c;
 	}
 
 	virtual byte recvbyte()
 	{
 		while (!(UCSR1A & (1 << RXC1)));
-		return UDR0;
+		return UDR1;
 	}
 };
 
