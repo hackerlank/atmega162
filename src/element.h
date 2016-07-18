@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include <stdarg.h>
+#include <malloc.h>
 
 class Element
 {
@@ -14,13 +15,13 @@ public:
 	~Element()
 	{
 		if (pins)
-			delete[] pins;
+			free(pins);
 	}
 
 	void connect(int n, ...)
 	{
 		va_list arg_ptr;
-		byte* p = pins = new byte[n];
+		byte* p = pins = malloc(sizeof(byte) * n);
 		byte d;
 		va_start(arg_ptr, n);
 		while (n--)
