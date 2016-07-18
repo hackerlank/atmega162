@@ -3,7 +3,6 @@
 
 #include "utils.h"
 #include <stdarg.h>
-#include <malloc.h>
 
 class Element
 {
@@ -12,16 +11,11 @@ public:
 		: pins(0)
 		{}
 
-	~Element()
-	{
-		if (pins)
-			free(pins);
-	}
-
 	void connect(int n, ...)
 	{
+//		assert(pins);
 		va_list arg_ptr;
-		byte* p = pins = malloc(sizeof(byte) * n);
+		byte* p = pins;
 		byte d;
 		va_start(arg_ptr, n);
 		while (n--)

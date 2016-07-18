@@ -8,6 +8,7 @@ class LCD : public Element
 public:
 	LCD(int _RS, int _RW, int _EN, int _DB0, int _DB1, int _DB2, int _DB3, int _DB4, int _DB5, int _DB6, int _DB7)
 	{
+		pins = _pins;
 		connect(11, _RS, _RW, _EN, _DB0, _DB1, _DB2, _DB3, _DB4, _DB5, _DB6, _DB7);
 	}
 
@@ -117,6 +118,8 @@ protected:
 	{
 		return chip.pa(7);
 	}
+
+	byte _pins[11];
 };
 
 #endif
