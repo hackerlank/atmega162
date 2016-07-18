@@ -6,7 +6,12 @@
 class Keyboard
 {
 public:
-	int keyscan(void)
+	Keyboard()
+	{
+		old_num = 0;
+	}
+
+	int keyscan()
 	{
 		int key_num = 0;
 		int cols[] = {0xe, 0xd, 0x7, 0xb};
@@ -28,7 +33,25 @@ public:
 		return key_num;
 	}
 
-private:
+	int triggered(int& num)
+	{
+//		int num;
+		if ((num = keyscan()) != old_num)
+		{
+			if (num > 0)
+			{
+				old_num = num;
+				return num;
+			}
+		}
+		old_num = num;
+		return 0;
+	}
+
+protected:
+
+	int old_num;
+
 	void setDDR(byte bits)
 	{
 		DDRD |= (bits & 0xfc);

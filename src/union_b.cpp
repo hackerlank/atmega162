@@ -18,23 +18,28 @@ int main()
 	usart1.init(0x33, true);
 	usart1.setTrigger(';');
 
-	int old_num = 0;
-	int num;
+	int keyid;
 	while(1)
 	{
-		if ((num = keyboard.keyscan()) != old_num)
+		if (keyboard.triggered(keyid))
 		{
-			if (num > 0 && strlen(text) < 64)
+#if 1
+			if (strlen(text) < 64)
 			{
 				char *p = text;
 				for (; *p; ++p);
-				*p++ = keys[num];
+				*p++ = keys[keyid];
 				*p = 0;
 				lcd.clear();
 				lcd.drawText(0, 0, text);
 			}
+#endif
+#if 0
+			sprintf(text, "light(%d);", keys[keyid]-'0');
+			usart0.send(text);
+			usart1.send(text);
+#endif
 		}
-		old_num = num;
 		checkCmd(usart0);
 		checkCmd(usart1);
 		_delay_ms(5);
