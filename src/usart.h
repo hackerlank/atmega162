@@ -3,6 +3,8 @@
 
 #include <avr/interrupt.h>
 
+typedef void (*RecvCallback)(byte);
+
 class USART
 {
 public:
@@ -12,6 +14,7 @@ public:
 		trigger = 0xff;
 		_triggered = false;
 		_loopback = false;
+		recvCallback = 0;
 	}
 
 	virtual void init(int baud, bool inter);
@@ -51,6 +54,13 @@ public:
 		add2buf(read);
 		if (_loopback)
 			sendbyte(read);
+		if (recvCallback)
+			recvCallback(read);
+	}
+
+	void setOnRecvData(RecvCallback f)
+	{
+		recvCallback = f;
 	}
 
 	bool triggered()
@@ -94,6 +104,7 @@ public:
 protected:
 	bool _triggered;
 	bool _loopback;
+	RecvCallback recvCallback;
 };
 
 class USART0 : public USART
