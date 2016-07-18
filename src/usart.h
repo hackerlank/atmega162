@@ -26,10 +26,19 @@ public:
 	void send(const char *c)
 	{
 		while (*c)
-		{
-			sendbyte(*c);
-			++c;
-		}
+			sendbyte(*c++);
+	}
+
+	void sendword(const uint16_t d)
+	{
+		sendbyte((d & 0xff00) >> 8);
+		sendbyte(d & 0xff);
+	}
+
+	void send(const uchar *c)
+	{
+		while (*c)
+			sendbyte(*c++);
 	}
 
 	virtual byte recvbyte();
