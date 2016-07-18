@@ -60,6 +60,35 @@ public:
 	{
 		return _p(DDRE, PINE, id);
 	}
+
+	void in(int p)
+	{
+		volatile uint8_t* dd;
+		switch (p & 0xf0)
+		{
+			case 0xa0: dd = &DDRA; break;
+			case 0xb0: dd = &DDRB; break;
+			case 0xc0: dd = &DDRC; break;
+			case 0xd0: dd = &DDRD; break;
+			case 0xe0: dd = &DDRE; break;
+		}
+		*dd |= 1 << (p & 0x0f);
+	}
+	void out(int p)
+	{
+		volatile uint8_t* dd;
+		switch (p & 0xf0)
+		{
+			case 0xa0: dd = &DDRA; break;
+			case 0xb0: dd = &DDRB; break;
+			case 0xc0: dd = &DDRC; break;
+			case 0xd0: dd = &DDRD; break;
+			case 0xe0: dd = &DDRE; break;
+		}
+		*dd &= ~(1 << (p & 0x0f));
+	}
+
+	
 	
 private:
 	void _p(volatile uint8_t& dd, volatile uint8_t& port, int id, bool val, bool output)

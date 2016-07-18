@@ -1,15 +1,20 @@
 #ifndef lcd_h
 #define lcd_h
 
-#include "utils.h"
+#include "element.h"
 
-class LCD
+class LCD : public Element
 {
 public:
+	LCD(int _RS, int _RW, int _EN, int _DB0, int _DB1, int _DB2, int _DB3, int _DB4, int _DB5, int _DB6, int _DB7)
+	{
+		connect(11, _RS, _RW, _EN, _DB0, _DB1, _DB2, _DB3, _DB4, _DB5, _DB6, _DB7);
+	}
+
 	void init()
 	{
-		DDRA = 0xff;
-		PORTA = 0xff;
+		for (int i = 3; i < 11; ++i)
+			pin(i, 1);
 		rs(1);
 		rw(1);
 		en(1);
@@ -64,7 +69,6 @@ public:
 		wcmd(_show ? 0x0c : 0x08, 1);
 	}
 	
-
 	void drawText(int x, int y, const char* str)
 	{
 		pos(x, y);
