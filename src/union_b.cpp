@@ -12,7 +12,7 @@ static char keys[] = "_123A456B789C*0#D";
 
 int mode = 1;
 
-//char tmp
+char tmp[32];
 
 int main()
 {
@@ -42,6 +42,13 @@ int main()
 				text[0] = 0;
 				lcd.clear();
 			}
+			else if (keys[keyid] == 'D')
+			{
+				strcat(text, ";");
+				usart1.send(text);
+				text[0] = 0;
+				lcd.clear();
+			}
 			else
 			{
 				switch (mode)
@@ -58,10 +65,10 @@ int main()
 					}
 					break;
 				case 2:
-					sprintf(text, "light(%d);", keys[keyid]-'0');
+					sprintf(tmp, "switch(%d);", keys[keyid]-'0');
 //					usart0.send(text);
-					usart1.send(text);
-					beep(1);
+					usart1.send(tmp);
+					// beep(1);
 					break;
 				}
 			}

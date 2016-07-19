@@ -72,6 +72,18 @@ public:
 			wdata(*p);
 	}
 
+	void dis(const char* str)
+	{
+		int row = 0;
+		pos(0, 0);
+		for (const char *p = str; *p; ++p)
+			if (*p != '\r' && *p != '\n')
+				wdata(*p);
+			else if (*p == '\r');
+			else
+				pos(++row, 0);
+	}
+
 protected:
 	void wait()
 	{

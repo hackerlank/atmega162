@@ -5,6 +5,7 @@
 
 #include "utils.h"
 #include "lcd.h"
+#include "humidity.h"
 #include "usart.h"
 #include <string.h>
 #include <stdlib.h>
@@ -12,6 +13,8 @@
 
 #if MCUID == 2
 LCD lcd;
+#elif MCUID == 1
+Humidity humidity;
 #endif
 
 #if MCUID == 1
@@ -20,18 +23,23 @@ LCD lcd;
 #define beep beep_b
 #endif
 
+bool startswith(const char* buf, const char* str)
+{
+	return !strncmp(buf, str, strlen(str));
+}
+
 void checkCmd(USART& usart)
 {
-	char tmp[32];
+	char tmp[64];
 	bool received = false;
 	if (usart.triggered())
 	{
 //		lcd.clear();
 //		lcd.drawText(0, 0, usart.buf);
 //		usart.send(usart.buf);
-
+		if (false);
 #if MCUID == 2
-		if (!strncmp(usart.buf, "beep(", 5))
+		else if (!strncmp(usart.buf, "beep(", 5))
 		{
 			int n;
 			sscanf(usart.buf, "beep(%d)", &n);
@@ -40,37 +48,56 @@ void checkCmd(USART& usart)
 			beep_b(n);
 			received = true;
 		}
-		if (!strncmp(usart.buf, "dis(", 4))
+		else if (!strncmp(usart.buf, "dis(", 4))
 		{
+			const char *p = usart.buf + 4;
 #ifndef DISPLAY_TEXT
-			sscanf(usart.buf, "dis(%s", tmp);
-			tmp[ strlen(tmp) - 2 ] = 0;
+			char *pt = tmp;
+			while (*p && *p != ')')
+			{
+				*pt++ = *p++;				
+			}
+			*pt = 0;
 			lcd.clear();
-			lcd.drawText(0, 0, tmp);
+			lcd.dis(tmp);
 #else
-			sscanf(usart.buf, "dis(%s", text);
-			text[ strlen(text) - 2 ] = 0;
+			char *pt = text;
+			while (*p && *p != ')')
+			{
+				*pt++ = *p++;				
+			}
+			*pt = 0;
 			lcd.clear();
-			lcd.drawText(0, 0, text);
+			lcd.dis(text);
+			text[0] = 0;
 #endif
 			received = true;
 		}
 #elif MCUID == 1
-		if (!strncmp(usart.buf, "light(", 6))
+		else if (!strncmp(usart.buf, "light(", 6))
 		{
 			int n;
 			sscanf(usart.buf, "light(%d)", &n);
 			light(n);
 			received = true;
 		}
-		if (!strncmp(usart.buf, "lightoff(", 9))
+
+		else if (!strncmp(usart.buf, "switch(", 7))
+		{
+			int n;
+			sscanf(usart.buf, "switch(%d)", &n);
+			led_switch(n);
+			received = true;
+		}
+
+		else if (!strncmp(usart.buf, "lightoff(", 9))
 		{
 			int n;
 			sscanf(usart.buf, "lightoff(%d)", &n);
 			light(n, false);
 			received = true;
 		}
-		if (!strncmp(usart.buf, "light_hex(", 10))
+		else if (!strncmp(usart.buf, "light_hex(", 10))
 		{
 			int n;
 			sscanf(usart.buf, "light_hex(%x)", &n);
@@ -78,8 +105,16 @@ void checkCmd(USART& usart)
 			PORTA = n;
 			received = true;
 		}
+		else if (!strncmp(usart.buf, "#1111;", 6))
+		{
+			int humi, humi_m, temp, temp_m;
+			humidity.read(humi, humi_m, temp, temp_m);
+			sprintf(tmp, "dis(ÎÂ¶È£º%d.%d ¡£C\nÊª¶È£º %d.%d %%RH);", temp, temp_m, humi, humi_m);
+			usart.send(tmp);
+			received = true;
+		}
 #endif
-		if (!strncmp(usart.buf, "loopback(", 9))
+		else if (!strncmp(usart.buf, "loopback(", 9))
 		{
 			int n;
 			sscanf(usart.buf, "loopback(%d)", &n);

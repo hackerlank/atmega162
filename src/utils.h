@@ -21,6 +21,11 @@ void light(int id, bool on = true)
 	}
 }
 
+void led_switch(int id)
+{
+	chip.pa(id, !chip.pa(id));
+}
+
 void _beep(ChipPort port, int idx, int count)
 {
 	while (count--)

@@ -6,7 +6,7 @@
 class Humidity
 {
 public:
-	void read(int& humi, int& temp)
+	void read(int& humi, int &humi_m, int& temp, int &temp_m)
 	{
 		byte b4, b3, b2, b1, b0;
 		byte check;
@@ -30,8 +30,12 @@ public:
 			check = b4 + b3 + b2 + b1;
 			if (check == b0)
 			{
-				humi = b4 << 8 | b3;
-				temp = b2 << 8 | b1;
+				humi = b4;
+				humi_m = b3;
+				temp = b2;
+				temp_m = b1;
+				// humi = b4 << 8 | b3;
+				// temp = b2 << 8 | b1;
 			}
 			else
 			{
