@@ -2,8 +2,6 @@
 #include "utils.h"
 #include "stepmotor.h"
 
-Chip chip;
-
 int main()
 {
 	StepMotor motor;
