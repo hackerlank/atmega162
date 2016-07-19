@@ -80,6 +80,7 @@ public:
 
 Timer timer1(TCCR1A, TCCR1B, TCNT1, TOIE1);
 Timer8bit timer0(TCCR0, TCNT0, TOIE0);
+Timer8bit timer2(TCCR2, TCNT2, TOIE2);
 
 ISR(TIMER1_OVF_vect)
 {
@@ -107,6 +108,20 @@ void setTimer0(double interval, timer_slot slot)
 	timer0.interval = interval;
 	timer0.slot = slot;
 	timer0.init();
+}
+
+ISR(TIMER2_OVF_vect)
+{
+	timer2.reset();
+	if (timer2.slot)
+		(*timer2.slot)();
+}
+
+void setTimer2(double interval, timer_slot slot)
+{
+	timer2.interval = interval;
+	timer2.slot = slot;
+	timer2.init();
 }
 
 #endif
