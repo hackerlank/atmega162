@@ -5,15 +5,14 @@
 
 int main()
 {
-	usart0.init(0x33, true);
-	usart0.setTrigger(';');
+	clock_begin();
 	usart1.init(0x33, true);
 	usart1.setTrigger(';');
+	usart1.send("mcua ready;");
 	light(1);
 	while (1)
 	{
-		checkCmd(usart0);
+//		motor.onloop();
 		checkCmd(usart1);
-		_delay_ms(500);
 	}
 }

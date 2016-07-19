@@ -31,6 +31,13 @@ bool startswith(const char* buf, const char* str)
 
 void checkCmd(USART& usart)
 {
+	static long lasttime = 0;
+	long clk = clock();
+	if (clk - lasttime < 500)
+		return;
+
+	lasttime = clk;
+
 	char tmp[64];
 	bool received = false;
 	if (usart.triggered())
