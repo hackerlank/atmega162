@@ -12,7 +12,7 @@ int main()
 	light(1);
 	while (1)
 	{
-//		motor.onloop();
+		motor.onloop();
 		checkCmd(usart1);
 	}
 }

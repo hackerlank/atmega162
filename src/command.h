@@ -8,6 +8,7 @@
 #include "humidity.h"
 #include "usart.h"
 #include "clock.h"
+#include "stepmotor.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -127,6 +128,16 @@ void checkCmd(USART& usart)
 			usart.send(tmp);
 			received = true;
 		}
+		else if (!strncmp(usart.buf, "#3333#", 6))
+		{
+			int us, clockwise;
+			sscanf(usart.buf, "#3333#%d#%d", &us, &clockwise);
+			sprintf(tmp, "dis(步进电机\n速度：%d\n方向：%s);", us, clockwise ? "顺时针" : "逆时针");
+			usart.send(tmp);
+			motor.set(us, clockwise);
+			received = true;
+		}
+
 #endif
 		else if (!strncmp(usart.buf, "loopback(", 9))
 		{

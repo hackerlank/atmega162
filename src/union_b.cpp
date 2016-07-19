@@ -21,10 +21,9 @@ int main()
 	Keyboard keyboard;
 	lcd.init();
 	lcd.drawText(0, 0, "Ready");
-	usart0.init(0x33, true);
-	usart0.setTrigger(';');
 	usart1.init(0x33, true);
 	usart1.setTrigger(';');
+	usart1.send("mcub ready;");
 
 	int keyid;
 	while(1)
@@ -75,7 +74,6 @@ int main()
 				}
 			}
 		}
-		checkCmd(usart0);
 		checkCmd(usart1);
 		_delay_ms(5);
 //		_delay_ms(500);
