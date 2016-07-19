@@ -6,6 +6,7 @@ char text[65] = {0};
 
 #include "command.h"
 #include "keyboard.h"
+#include "clock.h"
 
 static char keys[] = "_123A456B789C*0#D";
 
@@ -16,6 +17,7 @@ char tmp[32];
 
 int main()
 {
+	clock_begin();
 	Keyboard keyboard;
 	lcd.init();
 	lcd.drawText(0, 0, "Ready");

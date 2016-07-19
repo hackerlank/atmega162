@@ -7,6 +7,7 @@
 #include "lcd.h"
 #include "humidity.h"
 #include "usart.h"
+#include "clock.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -72,6 +73,12 @@ void checkCmd(USART& usart)
 			text[0] = 0;
 #endif
 			received = true;
+		}
+		else if (!strncmp(usart.buf, "#2222;", 6))
+		{
+			sprintf(tmp, "%ld\n%ld", clock(), clock_us());
+			lcd.clear();
+			lcd.dis(tmp);
 		}
 #elif MCUID == 1
 		else if (!strncmp(usart.buf, "light(", 6))
