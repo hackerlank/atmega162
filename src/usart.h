@@ -101,7 +101,7 @@ public:
 //	int len;
 	char *buf_tail, *buf_end;
 
-protected:
+public:
 	bool _triggered;
 	bool _loopback;
 	RecvCallback recvCallback;
