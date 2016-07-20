@@ -26,22 +26,35 @@ int main()
 	Zigbee zigbee;
 	_delay_ms(1000);
 	lcd.dis("Connecting...");
-//	usart1.send("zigbee_ready(b);");
-	_delay_ms(50);
+	// usart1.send("zigbee_ready(b);");
+	// _delay_ms(50);
 	while ((addr_b = zigbee.addr()) == 0xfffe)
 	{
 		_delay_ms(100);
 	}
-	lcd.dis("Waiting...");
-//	usart1.send("zigbee_ready(b);");
-	_delay_ms(50);
-	while (addr_a == 0xfffe)
-	{
-		checkCmd(usart1);
-		_delay_ms(100);
-	}
+	lcd.dis("Sending...");
 	usart1.send("zigbee_ready(b);");
-	sprintf(tmp, "Ready.\nADDR_A:%x\nADDR_B:%x", addr_a, addr_b);
+	_delay_ms(50);
+	while (!got_addr)
+	{
+//		usart1.send("zigbee_ready(b);");
+		_delay_ms(1000);
+		checkCmd(usart1);
+	}
+	// lcd.dis("Waiting...");
+//	usart1.send("zigbee_ready(b);");
+	// _delay_ms(50);
+// 	while (addr_a == 0xfffe)
+// 	{
+// 		sprintf(tmp, "Waiting...\n%s\nok", usart1.buf);
+// //			usart1.send("zigbee_ready(b);");
+
+// 		lcd.dis(tmp);
+// 		checkCmd(usart1);
+// 		_delay_ms(1000);
+// 	}
+	// sprintf(tmp, "Ready.\nADDR_A:%x\nADDR_B:%x", addr_a, addr_b);
+	sprintf(tmp, "Ready. \nADDR:%x", addr_b);
 	lcd.dis(tmp);
 	// usart1.init(0x33, true);
 //	usart1.setTrigger(';');

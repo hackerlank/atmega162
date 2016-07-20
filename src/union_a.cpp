@@ -16,26 +16,38 @@ int main()
 	usart1.init(12, true);
 //	usart1.setTrigger(';');
 	// usart1.setTriggerTime(60);
-	_delay_ms(1000);
+	// _delay_ms(1000);
 	blink.start(0);
-	// usart1.send("zigbee_ready(a);");
+	usart1.send("zigbee_ready(a);");
 	_delay_ms(50);
 	while ((addr_a = zigbee.addr()) == 0xfffe)
 	{
 		blink.onloop();
 		_delay_ms(100);
 	}
-	usart1.send("zigbee_ready(a);");
-	// lcd.dis("Waiting...");
 	flash.start(0);
-	while (addr_b == 0xfffe)
+	while (!got_addr)
 	{
 		flash.onloop();
+//		usart1.send("zigbee_ready(a);");
+		_delay_ms(1000);
 		checkCmd(usart1);
-		_delay_ms(100);
 	}
+	// while (addr_b == 0xfffe)
+	// {
+	// 	flash.onloop();
+	// 	checkCmd(usart1);
+	// 	_delay_ms(500);
+	// }
+	// usart1.send("got(a);");
+	// _delay_ms(500);
 
-	light(1);
+	// lcd.dis("Waiting...");
+
+//		usart1.send("zigbee_ready(a);");
+
+	DDRA = 0xff;
+	PORTA = 0x02;
 	while (1)
 	{
 		motor.onloop();
