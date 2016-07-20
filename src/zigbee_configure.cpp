@@ -6,6 +6,10 @@
 #include "lcd.h"
 #include <stdio.h>
 
+#if MCUID == 1
+#define LCD LCD_
+#endif
+
 #define BAUD 38400
 #define Coordinator 0
 

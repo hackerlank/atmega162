@@ -128,4 +128,25 @@ protected:
 	}
 };
 
+class LCD_
+{
+public:
+	void init()	{}
+
+	void clear() {}
+
+	void wcmd(uchar c, bool _wait) {}
+
+	void wdata(uchar c) {}
+
+	void pos(int x, int y) {}
+
+	void show(bool _show) {}	
+
+	void drawText(int x, int y, const char* str) {}
+
+	void dis(const char* str) {}
+};
+
+
 #endif
