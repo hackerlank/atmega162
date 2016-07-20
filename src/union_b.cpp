@@ -7,6 +7,7 @@ char text[65] = {0};
 #include "command.h"
 #include "keyboard.h"
 #include "clock.h"
+#include "zigbee.h"
 
 static char keys[] = "_123A456B789C*0#D";
 
@@ -19,11 +20,31 @@ int main()
 {
 	clock_begin();
 	Keyboard keyboard;
+	usart1.init(12, true);
+	// usart1.setTriggerTime(60);
 	lcd.init();
-	lcd.drawText(0, 0, "Ready");
-	usart1.init(0x33, true);
-	usart1.setTrigger(';');
-	usart1.send("mcub ready;");
+	Zigbee zigbee;
+	_delay_ms(1000);
+	lcd.dis("Connecting...");
+//	usart1.send("zigbee_ready(b);");
+	_delay_ms(50);
+	while ((addr_b = zigbee.addr()) == 0xfffe)
+	{
+		_delay_ms(100);
+	}
+	lcd.dis("Waiting...");
+//	usart1.send("zigbee_ready(b);");
+	_delay_ms(50);
+	while (addr_a == 0xfffe)
+	{
+		checkCmd(usart1);
+		_delay_ms(100);
+	}
+	usart1.send("zigbee_ready(b);");
+	sprintf(tmp, "Ready.\nADDR_A:%x\nADDR_B:%x", addr_a, addr_b);
+	lcd.dis(tmp);
+	// usart1.init(0x33, true);
+//	usart1.setTrigger(';');
 
 	int keyid;
 	while(1)

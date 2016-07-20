@@ -25,6 +25,8 @@ Humidity humidity;
 #define beep beep_b
 #endif
 
+int addr_a = 0xfffe, addr_b = 0xfffe;
+
 bool startswith(const char* buf, const char* str)
 {
 	return !strncmp(buf, str, strlen(str));
@@ -145,6 +147,24 @@ void checkCmd(USART& usart)
 			sscanf(usart.buf, "loopback(%d)", &n);
 			usart.loopback(n);
 			received = true;
+		}
+		else if (!strncmp(usart.buf, "zigbee_ready(", 13))
+		{
+			int c = usart.buf[13];
+			if (c == 'a' && MCUID == 2 || c == 'b' && MCUID == 1)
+			{
+				if (MCUID == 1)
+				{
+					// addr_b = *(int*)(usart.buf+16);
+					addr_b = usart.buf[16] << 8 | usart.buf[17];
+				}
+				if (MCUID == 2)
+				{
+					// addr_a = *(int*)(usart.buf+16);
+					addr_a = usart.buf[16] << 8 | usart.buf[17];
+				}
+				received = true;
+			}
 		}
 
 		if (received)
