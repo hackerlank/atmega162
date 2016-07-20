@@ -7,6 +7,20 @@
 
 typedef void (*RecvCallback)(byte);
 
+bool ustrcmp(const byte* b, const byte* a, const byte* a_end)
+{
+	while (a <= a_end)
+		if (*a++ != *b++)
+			return false;
+	return true;
+}
+
+void ustrcpy(byte* b, const byte* a, const byte* a_end)
+{
+	while (a <= a_end)
+		*b++ = *a++;
+}
+
 class USART
 {
 public:
@@ -87,11 +101,12 @@ public:
 			long clk = clock_ms();
 			if (clk - lasttime >= trigger_time)
 			{
-				if (buf[0] && !strcmp(old_buf, buf))
+				if (buf[0] && old_len == len && !memcmp(old_buf, buf, len))
 				{
 					_triggered = true;
 				}
-				strcpy(old_buf, buf);
+				old_len = len;
+				memcpy(old_buf, buf, len);
 				lasttime = clk;
 			}
 		}
@@ -106,7 +121,8 @@ public:
 	void clear_buf()
 	{
 		buf[0] = 0;
-		buf_tail = buf;
+		// buf_tail = buf;
+		len = 0;
 	}
 
 	void loopback(bool val)
@@ -117,10 +133,10 @@ public:
 protected:
 	void add2buf(char c)
 	{
-		*buf_tail++ = c;
-		*buf_tail = 0;
-//		buf[len++] = c;
-//		buf[len] = 0;
+	// 	*buf_tail++ = c;
+	// 	*buf_tail = 0;
+		buf[len++] = c;
+		buf[len] = 0;
 	}
 
 public:
@@ -131,8 +147,9 @@ public:
 //	char buf[10240];
 	char buf[64];
 	char old_buf[64];
-//	int len;
-	char *buf_tail, *buf_end;
+	int len;
+	int old_len;
+//	char *buf_tail, *buf_end;
 
 public:
 	bool _triggered;
