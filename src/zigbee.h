@@ -110,6 +110,31 @@ public:
 		return ret;
 	}
 
+	bool set_transmit_mode(int i)
+	{
+		byte cmd[] = {0xfc, 0x01, 0x91, 0x64, 0x58, 0xff};
+		const byte chk[] = {0x06, 0x07, 0x08, 0x09, 0x0a};
+		cmd[5] = i;
+		command(cmd);
+		while (!usart1.triggered())
+			_delay_ms(2);
+
+		const byte *p1 = chk, *end = chk + 5;
+		const char *p2 = usart1.buf;
+
+		while (p1 < end)
+		{
+			if (*p1++ != *p2++)
+			{
+				usart1.clear_buf();
+				return false;
+			}
+		}
+
+		usart1.clear_buf();
+		return true;
+	}
+
 	int baud(int bps)
 	{
 		byte cmd[] = {0xfc, 0x01, 0x91, 0x06, 0xff, 0xf6};

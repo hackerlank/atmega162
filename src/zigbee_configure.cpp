@@ -46,6 +46,13 @@ int main()
 	sprintf(tmp, "PANID set to %x", panid);
 	lcd.dis(tmp);
 	_delay_ms(1000);
+	lcd.dis("Setting transmit mode...");
+	_delay_ms(1000);
+	success = zigbee.set_transmit_mode(2);
+	lcd.dis(success ? "Successed." : "Failed.");
+	if (!success)
+		while (1);
+	_delay_ms(1000);
 	lcd.dis("Setting baud...");
 	_delay_ms(1000);
 	int baud = zigbee.baud(3); // restart required;
