@@ -2,6 +2,8 @@
 #define usart_h
 
 #include <avr/interrupt.h>
+#include <string.h>
+#include "clock.h"
 
 typedef void (*RecvCallback)(byte);
 
@@ -11,6 +13,8 @@ public:
 	USART()
 	{
 		clear_buf();
+		trigger_method = 0;
+		trigger_time = 5;
 		trigger = 0xff;
 		_triggered = false;
 		_loopback = false;
@@ -19,9 +23,15 @@ public:
 
 	virtual void init(int baud, bool inter);
 
-	void setTrigger(char c)
+	void setTriggerChar(char c)
 	{
+		trigger_method = 1;
 		trigger = c;
+	}
+	void setTriggerTime(int ms)
+	{
+		trigger_method = 0;
+		trigger_time = ms;
 	}
 
 	virtual void sendbyte(byte c);
@@ -44,12 +54,18 @@ public:
 			sendbyte(*c++);
 	}
 
+	void send(const byte* s, int len)
+	{
+		for (int i = 0; i < len; ++i)
+			sendbyte(s[i]);
+	}
+
 	virtual byte recvbyte();
 
 	virtual void onRXCI()
 	{
 		byte read = recvbyte();
-		if (read == trigger)
+		if (trigger_method == 1 && read == trigger)
 			_triggered = true;
 		add2buf(read);
 		if (_loopback)
@@ -65,6 +81,20 @@ public:
 
 	bool triggered()
 	{
+		if (trigger_method == 0)
+		{
+			static long lasttime = 0;
+			long clk = clock_ms();
+			if (clk - lasttime >= trigger_time)
+			{
+				if (buf[0] && !strcmp(old_buf, buf))
+				{
+					_triggered = true;
+				}
+				strcpy(old_buf, buf);
+				lasttime = clk;
+			}
+		}
 		if (_triggered)
 		{
 			_triggered = false;
@@ -95,9 +125,12 @@ protected:
 
 public:
 	char trigger;
+	int trigger_time;
+	int trigger_method;
 	bool intr_method;
 //	char buf[10240];
 	char buf[64];
+	char old_buf[64];
 //	int len;
 	char *buf_tail, *buf_end;
 
