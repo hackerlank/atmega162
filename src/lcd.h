@@ -74,6 +74,7 @@ public:
 
 	void dis(const char* str)
 	{
+		clear();
 		int row = 0;
 		pos(0, 0);
 		for (const char *p = str; *p; ++p)
